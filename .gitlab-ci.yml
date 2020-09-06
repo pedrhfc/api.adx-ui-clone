@@ -44,8 +44,8 @@ deploy-stage:
   stage: deploy
   script:
     - ssh-add <(echo "$SSH_PRIVATE_KEY" | base64 --decode)
-    - scp -P2222 $PROJECT root@$IP_SERVER:/root
-    - ssh -p2222 root@$IP_SERVER "mv /root/$PROJECT /var/www/html/go"
+    - scp -P4444 $PROJECT root@$IP_SERVER:/root
+    - ssh -p4444 root@$IP_SERVER "mv /root/$PROJECT /var/www/html/go"
     #- ssh -p2222 root@$IP_SERVER "systemctl restart goclass-rest-api.service"
   only:
     - master
