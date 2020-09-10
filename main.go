@@ -26,7 +26,7 @@ func setRoutes(router *mux.Router) {
 func main() {
 	var router *mux.Router
 
-	log.Printf("Server is working on http://localhost:1602")
+	log.Printf("Server is working here on http://localhost:1602")
 
 	router = mux.NewRouter()
 
@@ -34,7 +34,7 @@ func main() {
 
 	setRoutes(router)
 
-	err := http.ListenAndServe(":1602", router)
+	err := http.ListenAndServe(":1616", router)
 	if err != nil {
 		fmt.Println("Error", err)
 	}
