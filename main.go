@@ -26,7 +26,7 @@ func setRoutes(router *mux.Router) {
 func main() {
 	var router *mux.Router
 
-	log.Printf("Server is working here agai today on http://localhost:1602")
+	log.Printf("Server is working here today on http://localhost:1602")
 
 	router = mux.NewRouter()
 
