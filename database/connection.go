@@ -8,7 +8,7 @@ import (
 )
 
 func SetConnection() *sql.DB {
-	connectionDB, err := sql.Open("mysql", "root:123@tcp(127.0.0.1:3306)/api_class_rest")
+	connectionDB, err := sql.Open("mysql", "apiclass:apiclass###123@tcp(127.0.0.1:3306)/api_class_rest")
 
 	if err != nil {
 		fmt.Println("Error to connect", err)
