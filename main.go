@@ -29,7 +29,6 @@ func main() {
 	log.Printf("Server is working here today on http://localhost:1602")
 
 	router = mux.NewRouter()
-	a
 
 	router.Use(middlewares.JsonMiddleware)
 
