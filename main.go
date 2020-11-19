@@ -6,9 +6,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/pedro9128/api_adx-ui-clone/middlewares"
+	"github.com/pedro9128/api_adx-ui-clone/routes/units"
+	"github.com/pedro9128/api_adx-ui-clone/routes/users"
 	"github.com/rs/cors"
-	"gitlab.com/baugoncalves/goclass-rest-api/middlewares"
-	"gitlab.com/baugoncalves/goclass-rest-api/routes"
 )
 
 func majorRoute(w http.ResponseWriter, r *http.Request) {
@@ -17,11 +18,21 @@ func majorRoute(w http.ResponseWriter, r *http.Request) {
 
 func setRoutes(router *mux.Router) {
 	router.HandleFunc("/", majorRoute)
-	router.HandleFunc("/games", routes.GetGames).Methods("GET")
-	router.HandleFunc("/games/{id}", routes.GetGameByID).Methods("GET")
-	router.HandleFunc("/games", routes.NewGame).Methods("POST")
-	router.HandleFunc("/games/{id}", routes.UpdateGame).Methods("PUT")
-	router.HandleFunc("/games/{id}", routes.DeleteGame).Methods("DELETE")
+
+	router.HandleFunc("/session", users.Session).Methods("POST")
+
+	router.HandleFunc("/users", users.Index).Methods("GET")
+	router.HandleFunc("/users/{id}", users.Show).Methods("GET")
+	router.HandleFunc("/users", users.Store).Methods("POST")
+	router.HandleFunc("/users/{id}", users.Update).Methods("PUT")
+	router.HandleFunc("/users/{id}", users.Destroy).Methods("DELETE")
+
+	router.HandleFunc("/units", units.Index).Methods("GET")
+	router.HandleFunc("/units/{id}", units.Show).Methods("GET")
+	router.HandleFunc("/units", units.Store).Methods("POST")
+	router.HandleFunc("/units/{id}", units.Update).Methods("PUT")
+	router.HandleFunc("/units/{id}", units.Destroy).Methods("DELETE")
+
 }
 
 func main() {
@@ -38,9 +49,7 @@ func main() {
 	handler := cors.New(cors.Options{
 		AllowedOrigins: []string{"http://localhost", "http://localhost:8080"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
-		// AllowCredentials: true,
-		// Enable Debugging for testing, consider disabling in production
-		Debug: true,
+		Debug:          true,
 	}).Handler(router)
 
 	err := http.ListenAndServe(":1616", handler)

@@ -1,4 +1,4 @@
-package routes
+package units
 
 import (
 	"encoding/json"
@@ -7,42 +7,41 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"gitlab.com/baugoncalves/goclass-rest-api/database"
+	"github.com/pedro9128/api_adx-ui-clone/database"
 )
 
-type Game struct {
-	ID    int     `json:"id"`
-	Name  string  `json:"name"`
-	Price float64 `json:"price"`
+type Unit struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
 
-func GetGames(w http.ResponseWriter, r *http.Request) {
-	var games []Game
+func Index(w http.ResponseWriter, r *http.Request) {
+	var units []Unit
 
 	conn := database.SetConnection()
 	defer conn.Close()
 
-	selDB, err := conn.Query("SELECT * FROM games")
+	selDB, err := conn.Query("SELECT * FROM units WHERE id<>1")
 
 	if err != nil {
 		fmt.Println("Error to fetch", err)
 	}
 
 	for selDB.Next() {
-		var game Game
+		var unit Unit
 
-		err = selDB.Scan(&game.ID, &game.Name, &game.Price)
-		games = append(games, game)
+		err = selDB.Scan(&unit.ID, &unit.Name)
+		units = append(units, unit)
 	}
 
 	encoder := json.NewEncoder(w)
-	encoder.Encode(games)
+	encoder.Encode(units)
 }
 
-func NewGame(w http.ResponseWriter, r *http.Request) {
+func Store(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	conn := database.SetConnection()
-	stmt, err := conn.Prepare("INSERT INTO games(name,price) VALUES(?,?)")
+	stmt, err := conn.Prepare("INSERT INTO units(name,price) VALUES(?,?)")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -61,34 +60,34 @@ func NewGame(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetGameByID(w http.ResponseWriter, r *http.Request) {
+func Show(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	conn := database.SetConnection()
 	defer conn.Close()
 
 	vars := mux.Vars(r)
 	id := vars["id"]
-	game := Game{}
+	unit := Unit{}
 	encoder := json.NewEncoder(w)
 
-	err := conn.QueryRow("SELECT * FROM games WHERE id=?", id).Scan(&game.ID, &game.Name, &game.Price)
+	err := conn.QueryRow("SELECT * FROM units WHERE id=?", id).Scan(&unit.ID, &unit.Name)
 
 	if err != nil {
 		fmt.Println("Error to fetch", err)
 	}
 
-	encoder.Encode(game)
+	encoder.Encode(unit)
 }
 
-func UpdateGame(w http.ResponseWriter, r *http.Request) {
+func Update(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	conn := database.SetConnection()
 
-	stmt, err := conn.Prepare("UPDATE games SET name=?, price=? WHERE id=?")
+	stmt, err := conn.Prepare("UPDATE units SET name=? WHERE id=?")
 	if err != nil {
 		panic(err.Error())
 	}
-	var register Game
+	var register Unit
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -96,17 +95,17 @@ func UpdateGame(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal(body, &register)
 
-	_, err = stmt.Exec(register.Name, register.Price, register.ID)
+	_, err = stmt.Exec(register.Name, register.ID)
 	if err != nil {
 		panic(err.Error())
 	}
 }
 
-func DeleteGame(w http.ResponseWriter, r *http.Request) {
+func Destroy(w http.ResponseWriter, r *http.Request) {
 	conn := database.SetConnection()
 
 	params := mux.Vars(r)
-	stmt, err := conn.Prepare("DELETE FROM games WHERE id = ?")
+	stmt, err := conn.Prepare("DELETE FROM units WHERE id = ?")
 	if err != nil {
 		panic(err.Error())
 	}

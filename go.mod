@@ -1,4 +1,4 @@
-module gitlab.com/baugoncalves/goclass-rest-api
+module github.com/pedro9128/api_adx-ui-clone
 
 go 1.15
 
